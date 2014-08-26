@@ -134,25 +134,36 @@ namespace ReflectionPlugin
             {
                 Debug.Log((object)string.Format("RP: Renderer found: {0}", (object)this._rShader));
                 Material material;
+				string shaderName = this.ShaderName;
+
+				shaderName.Replace (" ", "_");
+				shaderName.Replace ("/", ".");
+
                 if (this._rShader == null)
                 {
                     Debug.Log((object)("RP: null shader. Trying to retrieve ReflectionPlugin.Shaders." + this.ShaderName));
                     Assembly assembly = Assembly.GetExecutingAssembly();
-                    StreamReader shaderStreamReader = new StreamReader(assembly.GetManifestResourceStream(/*"ReflectionPlugin.Shaders." + */this.ShaderName));
-                    if (shaderStreamReader != null)
-                    {
-                        material = new Material(shaderStreamReader.ReadToEnd())
-                        {
-                            mainTexture = pRenderer.material.mainTexture
-                        };
-                    }
-                    else
-                    {
-                        material = new Material(Shader.Find("Reflective/VertexList"))
-                        {
-                            mainTexture = pRenderer.material.mainTexture
-                        };
-                    }
+					try
+					{
+						Debug.Log ("[ReflectionPlugin] Looking for resource " + shaderName);
+                    	
+						StreamReader shaderStreamReader = new StreamReader(assembly.GetManifestResourceStream(/*"ReflectionPlugin.Shaders." + */shaderName));
+
+						Debug.Log ("[ReflectionPlugin] Got " + shaderName);
+
+						material = new Material(shaderStreamReader.ReadToEnd())
+						{
+							mainTexture = pRenderer.material.mainTexture
+						};
+					}
+					catch (Exception e)
+					{
+						Debug.Log ("ReflectionPlugin caught exception " + e.ToString() + " (" + e.Message + ")");
+						material = new Material(Shader.Find("Reflective/VertexList"))
+						{
+							mainTexture = pRenderer.material.mainTexture
+						};
+					}
                 }
                 else
                 {

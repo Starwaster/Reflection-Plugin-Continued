@@ -45,4 +45,42 @@
     <Compile Include="ReflectiveShaderModule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Reflect-BumpNolight.shader">
+      <Link>Reflect-BumpNolight.shader</Link>
+      <LogicalName>Reflective.Bumped_Unlit</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflect-BumpSpec.shader">
+      <Link>Reflect-BumpSpec.shader</Link>
+      <LogicalName>Reflective.Bumped_Specular</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflect-BumpVertexLit.shader">
+      <Link>Reflect-BumpVertexLit.shader</Link>
+      <LogicalName>Reflective.Bumped_VertexLit</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflect-Bumped.shader">
+      <Link>Reflect-Bumped.shader</Link>
+      <LogicalName>Reflective.Bumped_Diffuse</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflect-Diffuse.shader">
+      <Link>Reflect-Diffuse.shader</Link>
+      <LogicalName>Reflective.Diffuse</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflect-Glossy.shader">
+      <Link>Reflect-Glossy.shader</Link>
+      <LogicalName>Reflective.Specular</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflect-Parallax.shader">
+      <Link>Reflect-Parallax.shader</Link>
+      <LogicalName>Reflective.Parallax_Diffuse</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflect-ParallaxSpec.shader">
+      <Link>Reflect-ParallaxSpec.shader</Link>
+      <LogicalName>Reflective.Parallax_Specular</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflect-VertexLit.shader">
+      <Link>Reflect-VertexLit.shader</Link>
+      <LogicalName>Reflective.VertexLit</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
