@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflection-Plugin-Continued", "Reflection-Plugin-Continued.csproj", "{729C879C-030C-4473-8B33-7DFBF3C4431A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionPlugin", "ReflectionPlugin.csproj", "{729C879C-030C-4473-8B33-7DFBF3C4431A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,7 +15,7 @@ Global
 		{729C879C-030C-4473-8B33-7DFBF3C4431A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Reflection-Plugin-Continued.csproj
+		StartupItem = ReflectionPlugin.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
@@ -162,6 +162,17 @@ Global
 		$27.NamingStyle = PascalCase
 		$27.IncludeInstanceMembers = True
 		$27.IncludeStaticEntities = True
+		$0.TextStylePolicy = $29
+		$29.inheritsSet = null
+		$29.scope = text/x-shader
+		$0.VersionControlPolicy = $30
+		$30.inheritsSet = Mono
+		$0.ChangeLogPolicy = $31
+		$31.UpdateMode = ProjectRoot
+		$31.VcsIntegration = None
+		$31.MessageStyle = $32
+		$32.LineAlign = 0
+		$31.inheritsSet = Mono
 		version = 1.0
 	EndGlobalSection
 EndGlobal

@@ -13,7 +13,7 @@ namespace ReflectionPlugin
         [KSPField(isPersistant = false)]
         public int CubeMapSize = 128;
         [KSPField(isPersistant = false)]
-        public float FarClipPlane = 100f;
+        public float FarClipPlane = 1000000000f;
         [KSPField(isPersistant = false)]
         public float NearClipPlane = -1f;
         [KSPField(isPersistant = false)]
@@ -61,6 +61,7 @@ namespace ReflectionPlugin
         public override void OnStart(PartModule.StartState state)
         {
             Debug.Log((object)"RP: Starting ReflectionPlugin .. ");
+			GameEvents.onVesselGoOffRails.Add(RefreshReflection);
             if (this.ShaderName == string.Empty)
             {
                 Debug.Log((object)"RP: Defaulting shader to \"Reflective/VertexLit\"");
@@ -130,24 +131,34 @@ namespace ReflectionPlugin
 
         private void ReplaceShader(UnityEngine.Renderer pRenderer)
         {
-            if ((UnityEngine.Object)pRenderer != (UnityEngine.Object)null)
+            if ((object)pRenderer != null)
             {
                 Debug.Log((object)string.Format("RP: Renderer found: {0}", (object)this._rShader));
                 Material material;
 				string shaderName = this.ShaderName;
+				string resourceNamesString = "EMBEDDED RESOURCE NAMES\n";
 
-				shaderName.Replace (" ", "_");
-				shaderName.Replace ("/", ".");
+				shaderName = shaderName.Replace (" ", "_");
+				shaderName = shaderName.Replace ("/", ".");
 
                 if (this._rShader == null)
                 {
-                    Debug.Log((object)("RP: null shader. Trying to retrieve ReflectionPlugin.Shaders." + this.ShaderName));
+                    Debug.Log((object)("RP: null shader. Trying to retrieve ReflectionPlugin.Shaders." + shaderName));
                     Assembly assembly = Assembly.GetExecutingAssembly();
+
+					string[] resourceNamesList = assembly.GetManifestResourceNames();
+					foreach (string resourceName in resourceNamesList)
+					{
+						resourceNamesString += resourceName + "\n";
+					}
+
+					Debug.Log (resourceNamesString);
+
 					try
 					{
 						Debug.Log ("[ReflectionPlugin] Looking for resource " + shaderName);
                     	
-						StreamReader shaderStreamReader = new StreamReader(assembly.GetManifestResourceStream(/*"ReflectionPlugin.Shaders." + */shaderName));
+						StreamReader shaderStreamReader = new StreamReader(assembly.GetManifestResourceStream(/*"ReflectionPlugin.Shaders." + */"ReflectionPlugin.Resources." + shaderName + ".shader"));
 
 						Debug.Log ("[ReflectionPlugin] Got " + shaderName);
 
@@ -159,11 +170,20 @@ namespace ReflectionPlugin
 					catch (Exception e)
 					{
 						Debug.Log ("ReflectionPlugin caught exception " + e.ToString() + " (" + e.Message + ")");
-						material = new Material(Shader.Find("Reflective/VertexList"))
+
+						shaderName = "Reflective.VertexLit";
+						Debug.Log ("[ReflectionPlugin] Looking for fallback resource " + shaderName);
+						
+						StreamReader shaderStreamReader = new StreamReader(assembly.GetManifestResourceStream("ReflectionPlugin.Resources." + shaderName + ".shader"));
+						
+						Debug.Log ("[ReflectionPlugin] Got " + shaderName);
+						
+						material = new Material(shaderStreamReader.ReadToEnd())
 						{
 							mainTexture = pRenderer.material.mainTexture
 						};
 					}
+					Debug.Log ("[ReflectionPlugin] Initialized Material: " + material.ToString ());
                 }
                 else
                 {
@@ -174,13 +194,13 @@ namespace ReflectionPlugin
                 }
                 Texture texture1 = pRenderer.material.GetTexture("_BumpMap");
                 Texture texture2 = pRenderer.material.GetTexture("_Emissive");
-                if ((UnityEngine.Object)texture1 != (UnityEngine.Object)null)
+                if ((object)texture1 != null)
                 {
                     Debug.LogWarning((object)"RP: Found bumpmap texture, applying..");
                     material.SetTexture("_BumpMap", texture1);
                     material.SetTextureScale("_BumpMap", pRenderer.material.GetTextureScale("_BumpMap"));
                 }
-                if ((UnityEngine.Object)texture2 != (UnityEngine.Object)null)
+                if ((object)texture2 != null)
                 {
                     Debug.LogWarning((object)"RP: Found heightmap texture, applying..");
                     material.SetTexture("_ParallaxMap", texture2);
@@ -236,6 +256,10 @@ namespace ReflectionPlugin
             else
                 Debug.LogError((object)("RP: Unable to find a Renderer component on the part. Part: " + this.part.partName));
         }
+		public void RefreshReflection(Vessel v)
+		{
+			this.reflectiveScript.dirty = 7;
+		}
         public void FixedUpdate()
         {
             scriptStatus = this.reflectiveScript.status;
