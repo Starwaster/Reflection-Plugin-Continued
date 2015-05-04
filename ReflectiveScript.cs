@@ -27,7 +27,7 @@ namespace ReflectionPlugin
 		{
 			this.UpdateCubemap(63);
 		}
-		
+
 		private bool ShouldUpdate()
 		{
 			if (realTimeReflection || this.dirty > 0)
@@ -60,7 +60,7 @@ namespace ReflectionPlugin
 		
 		
 		
-		private void LateUpdate()
+		private void OnPostRender()
 		{
 			if (ShouldUpdate())
 			{
@@ -77,8 +77,8 @@ namespace ReflectionPlugin
 			}
 			else
 				status = renderResult + ((lastUpdate + this.updateRate) - Planetarium.GetUniversalTime()).ToString();
-			
 		}
+
 		private void UpdateCubemap(int faceMask)
 		{
 			if (!(bool)((UnityEngine.Object)this._cam))

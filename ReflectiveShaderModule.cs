@@ -260,7 +260,7 @@ namespace ReflectionPlugin
 		{
 			this.reflectiveScript.dirty = 7;
 		}
-        public void FixedUpdate()
+        public void Update()
         {
             scriptStatus = this.reflectiveScript.status;
             lastScene = this.reflectiveScript.lastScene;
