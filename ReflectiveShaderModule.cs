@@ -49,7 +49,7 @@ namespace ReflectionPlugin
         [KSPField(isPersistant = false)]
         public float NearClipPlane = -1f;
         [KSPField(isPersistant = false)]
-        public string MeshesToChange = "";
+        public string MeshesToChange = "all";
         [KSPField(isPersistant = false)]
         public bool OneFacePerFrame = true;
         [KSPField(isPersistant = false)]
@@ -273,16 +273,16 @@ namespace ReflectionPlugin
                 material.mainTextureScale = pRenderer.material.mainTextureScale;
 
                 pRenderer.material = material;
-                ReflectiveScript reflectiveScript = part.gameObject.AddComponent<ReflectiveScript>();
-                reflectiveScript.MatRenderer = pRenderer;
-                reflectiveScript.CubemapSize = CubeMapSize;
-                reflectiveScript.FarClipPlane = FarClipPlane;
-                reflectiveScript.NearClipPlane = NearClipPlane;
-                reflectiveScript.OneFacePerFrame = OneFacePerFrame;
-                reflectiveScript.realTimeReflection = realTimeReflection;
-                reflectiveScript.updateRate = updateRate;
-                reflectiveScript.dirty = 7;
-                reflectiveScript = reflectiveScript;
+                ReflectiveScript _reflectiveScript = part.gameObject.AddComponent<ReflectiveScript>();
+                _reflectiveScript.MatRenderer = pRenderer;
+				_reflectiveScript.CubemapSize = CubeMapSize;
+				_reflectiveScript.FarClipPlane = FarClipPlane;
+				_reflectiveScript.NearClipPlane = NearClipPlane;
+				_reflectiveScript.OneFacePerFrame = OneFacePerFrame;
+				_reflectiveScript.realTimeReflection = realTimeReflection;
+				_reflectiveScript.updateRate = updateRate;
+				_reflectiveScript.dirty = 7;
+				reflectiveScript = _reflectiveScript;
                 Debug.Log((object)"RP: Material, shader and texture updated.");
             }
             else

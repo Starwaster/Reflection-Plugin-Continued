@@ -144,15 +144,6 @@ Layer 30: SurfaceFX
 				_go.camera.renderingPath = RenderingPath.UsePlayerSettings;
 				_go.camera.depth = Camera.main.depth + 1;
 				_go.camera.aspect = 1;
-				float[] distances = new float[32];
-
-				distances[0] = distances[1] = distances[15] = 60000;
-				distances[10] = 3.0E+07F;
-				distances[23] = 3.0E+07F;
-
-				_go.camera.layerCullDistances = distances;
-
-				_go.camera.cullingMask = (1 << 0) | (1 << 1) | (1 << 4) | (1 << 9) | (1 << 10) | (1 << 15) | (1 << 16) | (1 << 18) | (1 << 20) | (1 << 23) | (1 << 30);
 
 				_cam = _go.camera;
 				_cam.nearClipPlane = NearClipPlane;
@@ -197,7 +188,7 @@ Layer 30: SurfaceFX
 				renderTexture1.useMipMap = true;
 				renderTexture1.wrapMode = TextureWrapMode.Clamp;
 				RenderTexture renderTexture2 = renderTexture1;
-				_cam.backgroundColor = Color.black;
+				_cam.backgroundColor = Color.blue;
 
 				reflectiveScript._rtex = renderTexture2;
 				//MatRenderer.sharedMaterial.SetTexture("_Cube", (Texture)_rtex);
@@ -221,7 +212,27 @@ Layer 30: SurfaceFX
 
 
 			_cam.transform.position = transform.position;
+
+			bool result = false;
+
+			_cam.transform.position = GalaxyCubeControl.Instance.transform.position;
+			_cam.farClipPlane = 100.0f;
+			_cam.cullingMask = 1 << 18;
 			if (_cam.RenderToCubemap(_rtex, faceMask))
+				result = true;
+			
+			_cam.transform.position = ScaledSpace.Instance.transform.position;
+			_cam.farClipPlane = 3.0e7f;
+			_cam.cullingMask = (1 << 10) | (1 << 23);
+			if (_cam.RenderToCubemap(_rtex, faceMask))
+				result = true;
+
+			_cam.farClipPlane = 60000.0f;
+			_cam.cullingMask = (1 << 0) | (1 << 1) | (1 << 5) | (1 << 15);
+			if (_cam.RenderToCubemap(_rtex, faceMask))
+				result = true;
+
+			if (result)
 			{
 				//Debug.Log ("Checking time");
 				lastUpdate = Planetarium.GetUniversalTime();
