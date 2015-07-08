@@ -146,12 +146,14 @@ Layer 30: SurfaceFX
 				_go.camera.aspect = 1;
 				float[] distances = new float[32];
 
+				distances[0] = distances[1] = distances[15] = 60000;
 				distances[10] = 3.0E+07F;
-				distances[15] = 3.0E+07F;
+				distances[23] = 3.0E+07F;
 
 				_go.camera.layerCullDistances = distances;
 
-				//_go.camera.cullingMask = LayerMask. //(1 << 0) | (1 << 4) | (1 << 9) | (1 << 10) | (1 << 15) | (1 << 18) | (1 << 23);
+				_go.camera.cullingMask = (1 << 0) | (1 << 1) | (1 << 4) | (1 << 9) | (1 << 10) | (1 << 15) | (1 << 16) | (1 << 18) | (1 << 20) | (1 << 23) | (1 << 30);
+
 				_cam = _go.camera;
 				_cam.nearClipPlane = NearClipPlane;
 				_cam.farClipPlane = FarClipPlane;
