@@ -2,10 +2,19 @@ using UnityEngine;
 
 namespace ReflectionPlugin
 {
+	public class ProcCubeMap : ProceduralCubemap
+	{
+		ProcCubeMap()
+		{
+		}
+	}
+
 	public class ReflectiveScript : MonoBehaviour
 	{
+		public static int i = 0;
 		public int CubemapSize = 128;
-		public float FarClipPlane = 100f;
+		public Material currentMaterial;
+		public float FarClipPlane = float.MaxValue;
 		public float NearClipPlane = -1f;
 		public Renderer MatRenderer;
 		public bool OneFacePerFrame;
@@ -16,6 +25,7 @@ namespace ReflectionPlugin
 		
 		private Camera _cam;
 		private RenderTexture _rtex;
+		private GameObject _go;
 		public string status = "";
 		private string renderResult = "PRE-INITIALIZATION";
 		//private int maskBit = 12;
@@ -25,18 +35,22 @@ namespace ReflectionPlugin
 		
 		private void Start()
 		{
-			this.UpdateCubemap(63);
+			//currentMaterial = renderer.material;
+			for(int i = 0; i < 31; i++)
+				Debug.Log (" Layer " + i.ToString () + ": " + LayerMask.LayerToName(i));
+			UpdateCubemap(63);
+			dirty = 7;
 		}
 
 		private bool ShouldUpdate()
 		{
-			if (realTimeReflection || this.dirty > 0)
+			if (realTimeReflection || dirty > 0)
 			{
 				return true;
 			}
-			else if ( Planetarium.GetUniversalTime() >= this.lastUpdate + this.updateRate && (Time.time > this.lastRealUpdate + 5f))
+			else if ( Planetarium.GetUniversalTime() >= lastUpdate + updateRate && (Time.time > lastRealUpdate + 5f))
 			{
-				this.dirty = 6;
+				dirty = 6;
 				return true;
 			}
 			else
@@ -48,97 +62,191 @@ namespace ReflectionPlugin
 				{
 					scene = FlightGlobals.currentMainBody.name;
 				}
-				if (scene != this.lastScene)
+				if (scene != lastScene)
 				{
-					this.dirty = 7;
-					this.lastScene = scene;
+					dirty = 7;
+					lastScene = scene;
 					return true;
 				}
 			}
 			return false;
 		}
+
+		protected void FixedUpdate()
+		{
+			_cam.transform.position = _go.transform.position = transform.position;
+		}
 		
-		
-		
-		private void OnPostRender()
+		protected void LateUpdate()
 		{
 			if (ShouldUpdate())
 			{
-				if (OneFacePerFrame && this.dirty < 7)
+				if (OneFacePerFrame && dirty < 7)
 				{
-					//this._cam.cullingMask = maskBit;
-					this.UpdateCubemap(1 << Time.frameCount % 6);
+					//_cam.cullingMask = maskBit;
+					UpdateCubemap(1 << Time.frameCount % 6);
 				}
 				else
 				{
-					//this._cam.cullingMask = maskBit;
-					this.UpdateCubemap(63);
+					//_cam.cullingMask = maskBit;
+					UpdateCubemap(63);
 				}
 			}
 			else
-				status = renderResult + ((lastUpdate + this.updateRate) - Planetarium.GetUniversalTime()).ToString();
+				status = renderResult + ((lastUpdate + updateRate) - Planetarium.GetUniversalTime()).ToString();
 		}
 
-		private void UpdateCubemap(int faceMask)
+/*
+Layer 0: Default
+Layer 1: TransparentFX
+Layer 2: Ignore Raycast
+Layer 3: 
+Layer 4: Water
+Layer 5: UI
+Layer 6: 
+Layer 7: 
+Layer 8: PartsList_Icons
+Layer 9: Atmosphere
+Layer 10: Scaled Scenery
+Layer 11: UI_Culled
+Layer 12: UI_Main
+Layer 13: UI_Mask
+Layer 14: Screens
+Layer 15: Local Scenery
+Layer 16: kerbals
+Layer 17: Editor_UI
+Layer 18: SkySphere
+Layer 19: Disconnected Parts
+Layer 20: Internal Space
+Layer 21: Part Triggers
+Layer 22: KerbalInstructors
+Layer 23: ScaledSpaceSun
+Layer 24: MapFX
+Layer 25: EzGUI_UI
+Layer 26: WheelCollidersIgnore
+Layer 27: WheelColliders
+Layer 28: TerrainColliders
+Layer 29: DragRender
+Layer 30: SurfaceFX
+*/		
+
+		protected void UpdateCubemap(int faceMask)
 		{
-			if (!(bool)((UnityEngine.Object)this._cam))
+
+			if ((object)_cam == null) 
 			{
-				GameObject gameObject1 = new GameObject("ReflectionCamera", new System.Type[1] { typeof(Camera) });
+				_go = new GameObject("CubemapCamera" + i.ToString ());
+				_go.AddComponent(typeof(Camera));
+				_go.hideFlags = HideFlags.HideAndDontSave;
+				_go.transform.position = transform.position;
+				_go.transform.rotation = Quaternion.identity;
+				_go.camera.clearFlags = CameraClearFlags.Skybox;
+				_go.camera.renderingPath = RenderingPath.UsePlayerSettings;
+				_go.camera.depth = Camera.main.depth + 1;
+				_go.camera.aspect = 1;
+				float[] distances = new float[32];
+
+				distances[10] = 3.0E+07F;
+				distances[15] = 3.0E+07F;
+
+				_go.camera.layerCullDistances = distances;
+
+				//_go.camera.cullingMask = LayerMask. //(1 << 0) | (1 << 4) | (1 << 9) | (1 << 10) | (1 << 15) | (1 << 18) | (1 << 23);
+				_cam = _go.camera;
+				_cam.nearClipPlane = NearClipPlane;
+				_cam.farClipPlane = FarClipPlane;
+				_cam.enabled = false;
+				i += 1;
+			}
+
+
+			/*
+			if (!(bool)((UnityEngine.Object)_cam))
+			{
+				GameObject gameObject1 = new GameObject("CubemapCamera", new System.Type[1] { typeof(Camera) });
 				gameObject1.hideFlags = HideFlags.HideAndDontSave;
 				GameObject gameObject2 = gameObject1;
-				gameObject2.transform.position = this.transform.position;
+				gameObject2.transform.position = transform.position;
 				gameObject2.transform.rotation = Quaternion.identity;
-				this._cam = gameObject2.camera;
-				this._cam.hdr = true;
-				this._cam.depth = Camera.main.depth + 1;
-				this._cam.farClipPlane = this.FarClipPlane;
-				this._cam.enabled = false;
-				this._cam.cullingMask = (1 << 0) | (1 << 4) | (1 << 9) | (1 << 10) | (1 << 15) | (1 << 18) | (1 << 23);
-				//this._cam.cullingMask = (1 << maskBit);
-				this._cam.layerCullSpherical = true;
-				if (this.NearClipPlane > 0f)
-					this._cam.nearClipPlane = this.NearClipPlane;
+				_cam = gameObject2.camera;
+				//_cam.hdr = true;
+				_cam.depth = Camera.main.depth + 1;//Camera.main.depth + 1;
+				_cam.farClipPlane = FarClipPlane;
+				_cam.enabled = false;
+				_cam.cullingMask = (1 << 0) | (1 << 4) | (1 << 9) | (1 << 10) | (1 << 15) | (1 << 18) | (1 << 23);
+				//_cam.cullingMask = (1 << maskBit);
+				//_cam.layerCullSpherical = true;
+				if (NearClipPlane > 0f)
+					_cam.nearClipPlane = NearClipPlane;
 				for (int i = 0; i < 32; i++)
 				{
-					this._cam.layerCullDistances[i] = int.MaxValue;
+					_cam.layerCullDistances[i] = int.MaxValue;
 				}
-				//                               -1                                              -False                              True
-				//this.status = this._cam.cullingMask.ToString();
-				//this._cam.cullingMask = 32771;
+				status = _cam.cullingMask.ToString();
 			}
-			if (!(bool)((UnityEngine.Object)this._rtex))
+			 */
+			if ((object)_rtex == null)
 			{
 				ReflectiveScript reflectiveScript = this;
-				RenderTexture renderTexture1 = new RenderTexture(this.CubemapSize, this.CubemapSize, 16);
+				RenderTexture renderTexture1 = new RenderTexture(CubemapSize, CubemapSize, 16);
 				renderTexture1.isCubemap = true;
+				renderTexture1.isPowerOfTwo = true;
 				renderTexture1.hideFlags = HideFlags.HideAndDontSave;
+				renderTexture1.useMipMap = true;
+				renderTexture1.wrapMode = TextureWrapMode.Clamp;
 				RenderTexture renderTexture2 = renderTexture1;
+				_cam.backgroundColor = Color.black;
+
 				reflectiveScript._rtex = renderTexture2;
-				this.MatRenderer.sharedMaterial.SetTexture("_Cube", (Texture)this._rtex);
+				//MatRenderer.sharedMaterial.SetTexture("_Cube", (Texture)_rtex);
+				foreach (Renderer r in GetComponentsInChildren<Renderer>())
+				{
+					foreach (Material m in r.sharedMaterials)
+					{
+						if (m.HasProperty("_Cube"))
+						{
+							m.SetTexture("_Cube", _rtex);
+						}
+					}
+				}
 			}
-			this._cam.transform.position = this.transform.position;
-			if (this._cam.RenderToCubemap(this._rtex, faceMask))
+			if ((object)_cam == null)
+				Debug.Log ("_cam null");
+			if ((object)_rtex == null)
+				Debug.Log ("_rtex null");
+			if ((object)_go == null)
+				Debug.Log ("_go null");
+
+
+			_cam.transform.position = transform.position;
+			if (_cam.RenderToCubemap(_rtex, faceMask))
 			{
-				this.lastUpdate = Planetarium.GetUniversalTime();
-				this.lastRealUpdate = Time.time;
+				//Debug.Log ("Checking time");
+				lastUpdate = Planetarium.GetUniversalTime();
+				lastRealUpdate = Time.time;
+				//Debug.Log ("Setting material");
+				//currentMaterial.SetTexture ("_Cube", _rtex);
+				//renderer.material = currentMaterial;
 				renderResult = "Success: (next)";
-				if (this.dirty > 0)
+				if (dirty > 0)
 				{
 					if (faceMask == 63)
-						this.dirty = 0;
+						dirty = 0;
 					else
 					{
-						this.dirty -= 1;
+						dirty -= 1;
 					}
 				}
 			}
 			else
 				renderResult = "Failure: (next)";
+			//Debug.Log ("Result = " + renderResult);
 		}
 		private void OnDisable()
 		{
-			UnityEngine.Object.DestroyImmediate((UnityEngine.Object)this._cam);
-			UnityEngine.Object.DestroyImmediate((UnityEngine.Object)this._rtex);
+			UnityEngine.Object.DestroyImmediate((UnityEngine.Object)_cam);
+			UnityEngine.Object.DestroyImmediate((UnityEngine.Object)_rtex);
+			UnityEngine.Object.DestroyImmediate((UnityEngine.Object)_go);
 		}
 	}
 }

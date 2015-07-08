@@ -1,6 +1,6 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ReflectiveShaderModule.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ReflectiveScript.cs">
     <Files>
       <File FileName="Resources\Reflective.Bumped_Diffuse.shader" Line="1" Column="1" />
       <File FileName="Resources\Reflective.Bumped_Unlit.shader" Line="1" Column="1" />
@@ -11,16 +11,15 @@
       <File FileName="Resources\Reflective.Parallax_Diffuse.shader" Line="1" Column="1" />
       <File FileName="Resources\Reflective.Parallax_Specular.shader" Line="1" Column="1" />
       <File FileName="Resources\Reflective.VertexLit.shader" Line="1" Column="1" />
-      <File FileName="ReflectiveShaderModule.cs" Line="190" Column="58" />
-      <File FileName="ReflectiveScript.cs" Line="30" Column="3" />
+      <File FileName="ReflectiveShaderModule.cs" Line="1" Column="1" />
+      <File FileName="ReflectiveScript.cs" Line="145" Column="29" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="ReflectionPlugin" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="Resources" expanded="True" />
-            <Node name="ReflectiveShaderModule.cs" selected="True" />
+            <Node name="ReflectiveScript.cs" selected="True" />
           </Node>
         </State>
       </Pad>
