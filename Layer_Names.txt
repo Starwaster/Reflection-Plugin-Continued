@@ -1,0 +1,31 @@
+ Layer 0: Default
+ Layer 1: TransparentFX
+ Layer 2: Ignore Raycast
+ Layer 3: 
+ Layer 4: Water
+ Layer 5: UI
+ Layer 6: 
+ Layer 7: 
+ Layer 8: PartsList_Icons
+ Layer 9: Atmosphere
+ Layer 10: Scaled Scenery
+ Layer 11: UI_Culled
+ Layer 12: UI_Main
+ Layer 13: UI_Mask
+ Layer 14: Screens
+ Layer 15: Local Scenery
+ Layer 16: kerbals
+ Layer 17: Editor_UI
+ Layer 18: SkySphere
+ Layer 19: Disconnected Parts
+ Layer 20: Internal Space
+ Layer 21: Part Triggers
+ Layer 22: KerbalInstructors
+ Layer 23: ScaledSpaceSun
+ Layer 24: MapFX
+ Layer 25: EzGUI_UI
+ Layer 26: WheelCollidersIgnore
+ Layer 27: WheelColliders
+ Layer 28: TerrainColliders
+ Layer 29: DragRender
+ Layer 30: SurfaceFX
