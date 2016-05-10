@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{729C879C-030C-4473-8B33-7DFBF3C4431A}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -33,11 +33,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Games\KSP_win_1.0.4\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Games\KSP_win_1.0.4\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\Games\KSP_win_1.0.5\KSP_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -50,15 +47,9 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Reflective.Bumped_Diffuse.shader">
-      <LogicalName>ReflectionPlugin.Resources.Reflective.Bumped_Diffuse.shader</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Reflective.Bumped_Specular.shader">
-      <LogicalName>ReflectionPlugin.Resources.Reflective.Bumped_Specular.shader</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Reflective.Bumped_Unlit.shader">
-      <LogicalName>ReflectionPlugin.Resources.Reflective.Bumped_Unlit.shader</LogicalName>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reflective.Bumped_Diffuse.shader" />
+    <EmbeddedResource Include="Resources\Reflective.Bumped_Specular.shader" />
+    <EmbeddedResource Include="Resources\Reflective.Bumped_Unlit.shader" />
     <EmbeddedResource Include="Resources\Reflective.VertexLit.shader" />
     <EmbeddedResource Include="Resources\Reflective.Specular.shader" />
     <EmbeddedResource Include="Resources\Reflective.Parallax_Specular.shader" />

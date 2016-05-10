@@ -2,28 +2,9 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="ReflectiveScript.cs">
     <Files>
-      <File FileName="Resources\Reflective.Bumped_Diffuse.shader" Line="1" Column="1" />
-      <File FileName="Resources\Reflective.Bumped_Unlit.shader" Line="1" Column="1" />
-      <File FileName="Resources\Reflective.Bumped_Specular.shader" Line="1" Column="1" />
-      <File FileName="Resources\Reflective.Bumped_VertexLit.shader" Line="1" Column="1" />
-      <File FileName="Resources\Reflective.Diffuse.shader" Line="1" Column="1" />
-      <File FileName="Resources\Reflective.Specular.shader" Line="1" Column="1" />
-      <File FileName="Resources\Reflective.Parallax_Diffuse.shader" Line="1" Column="1" />
-      <File FileName="Resources\Reflective.Parallax_Specular.shader" Line="1" Column="1" />
-      <File FileName="Resources\Reflective.VertexLit.shader" Line="1" Column="1" />
-      <File FileName="ReflectiveShaderModule.cs" Line="1" Column="1" />
-      <File FileName="ReflectiveScript.cs" Line="145" Column="29" />
+      <File FileName="ReflectiveScript.cs" Line="140" Column="7" />
+      <File FileName="ReflectiveShaderModule.cs" Line="66" Column="25" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="ReflectionPlugin" expanded="True">
-            <Node name="References" expanded="True" />
-            <Node name="ReflectiveScript.cs" selected="True" />
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

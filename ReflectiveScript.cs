@@ -15,12 +15,13 @@ namespace ReflectionPlugin
 		public int CubemapSize = 128;
 		public Material currentMaterial;
 		public float FarClipPlane = float.MaxValue;
-		public float NearClipPlane = -1f;
+		public float NearClipPlane = 0.125f;
 		public Renderer MatRenderer;
 		public bool OneFacePerFrame;
-		public bool realTimeReflection = true;
-		public double updateRate = 0.0;
+		public bool realTimeReflection = false;
+		public double updateRate = 300.0f;
 		public int dirty = 7;
+		public float scaledFaderEnd = 70000;
 		//private int maskBit;
 		
 		private Camera _cam;
@@ -72,12 +73,12 @@ namespace ReflectionPlugin
 			return false;
 		}
 
-		protected void FixedUpdate()
-		{
-			_cam.transform.position = _go.transform.position = transform.position;
-		}
+		//protected void FixedUpdate()
+		//{
+		//	_cam.transform.position = _go.transform.position = transform.position;
+		//}
 		
-		protected void LateUpdate()
+		protected void Update()
 		{
 			if (ShouldUpdate())
 			{
@@ -135,56 +136,30 @@ Layer 30: SurfaceFX
 
 			if ((object)_cam == null) 
 			{
-				_go = new GameObject("CubemapCamera" + i.ToString ());
-				_go.AddComponent(typeof(Camera));
+				_go = new GameObject("CubemapCamera");
+				_go.AddComponent<Camera>();
 				_go.hideFlags = HideFlags.HideAndDontSave;
 				_go.transform.position = transform.position;
-				_go.transform.rotation = Quaternion.identity;
-				_go.camera.clearFlags = CameraClearFlags.Skybox;
-				_go.camera.renderingPath = RenderingPath.UsePlayerSettings;
-				_go.camera.depth = Camera.main.depth + 1;
-				_go.camera.aspect = 1;
-
-				_cam = _go.camera;
+				//_go.transform.rotation = Quaternion.identity;
+				_cam = _go.GetComponent<Camera>();
+				_cam.clearFlags = CameraClearFlags.Depth;
+				_cam.renderingPath = RenderingPath.UsePlayerSettings;
+				//_cam.depth = Camera.main.depth + 1;
+				_cam.aspect = 1;
+				_cam.layerCullSpherical = true;
 				_cam.nearClipPlane = NearClipPlane;
 				_cam.farClipPlane = FarClipPlane;
 				_cam.enabled = false;
-				i += 1;
 			}
 
 
-			/*
-			if (!(bool)((UnityEngine.Object)_cam))
-			{
-				GameObject gameObject1 = new GameObject("CubemapCamera", new System.Type[1] { typeof(Camera) });
-				gameObject1.hideFlags = HideFlags.HideAndDontSave;
-				GameObject gameObject2 = gameObject1;
-				gameObject2.transform.position = transform.position;
-				gameObject2.transform.rotation = Quaternion.identity;
-				_cam = gameObject2.camera;
-				//_cam.hdr = true;
-				_cam.depth = Camera.main.depth + 1;//Camera.main.depth + 1;
-				_cam.farClipPlane = FarClipPlane;
-				_cam.enabled = false;
-				_cam.cullingMask = (1 << 0) | (1 << 4) | (1 << 9) | (1 << 10) | (1 << 15) | (1 << 18) | (1 << 23);
-				//_cam.cullingMask = (1 << maskBit);
-				//_cam.layerCullSpherical = true;
-				if (NearClipPlane > 0f)
-					_cam.nearClipPlane = NearClipPlane;
-				for (int i = 0; i < 32; i++)
-				{
-					_cam.layerCullDistances[i] = int.MaxValue;
-				}
-				status = _cam.cullingMask.ToString();
-			}
-			 */
 			if ((object)_rtex == null)
 			{
 				ReflectiveScript reflectiveScript = this;
 				RenderTexture renderTexture1 = new RenderTexture(CubemapSize, CubemapSize, 16);
 				renderTexture1.isCubemap = true;
 				renderTexture1.isPowerOfTwo = true;
-				renderTexture1.hideFlags = HideFlags.HideAndDontSave;
+				//renderTexture1.hideFlags = HideFlags.HideAndDontSave;
 				renderTexture1.useMipMap = true;
 				renderTexture1.wrapMode = TextureWrapMode.Clamp;
 				RenderTexture renderTexture2 = renderTexture1;
@@ -227,8 +202,9 @@ Layer 30: SurfaceFX
 			if (_cam.RenderToCubemap(_rtex, faceMask))
 				result = true;
 
-			_cam.farClipPlane = 60000.0f;
-			_cam.cullingMask = (1 << 0) | (1 << 1) | (1 << 5) | (1 << 15);
+			_cam.transform.position = this.transform.position;
+			_cam.farClipPlane = scaledFaderEnd;
+			_cam.cullingMask = (1 << 0) | (1 << 1) | (1 << 4);// | (1 << 15);
 			if (_cam.RenderToCubemap(_rtex, faceMask))
 				result = true;
 

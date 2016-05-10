@@ -79,7 +79,7 @@ namespace ReflectionPlugin
         [KSPField(isPersistant = false)]
         public bool realTimeReflection = true;
         [KSPField(isPersistant = false)]
-        public double updateRate = 60.0;
+        public double updateRate = 300.0;
         [KSPField(isPersistant = false, guiActive = false, guiName = "Last Scene", guiUnits = "", guiFormat = "G")]
         public string lastScene = "";
         [KSPField(isPersistant = false, guiActive = false, guiName = "Shader", guiUnits = "", guiFormat = "G")]
@@ -94,6 +94,7 @@ namespace ReflectionPlugin
         {
             Debug.Log((object)"RP: Starting ReflectionPlugin .. ");
 			GameEvents.onVesselGoOffRails.Add(RefreshReflection);
+			GameEvents.onDominantBodyChange.Add(UpdateBody);
             if (ShaderName == string.Empty)
             {
                 Debug.Log((object)"RP: Defaulting shader to \"Reflective/VertexLit\"");
@@ -104,6 +105,7 @@ namespace ReflectionPlugin
 
             if ((UnityEngine.Object)_rShader == (UnityEngine.Object)null)
             {
+				#if DEBUG
                 Debug.LogWarning((object)string.Format("RP: Could not find the specified shader \"{0}\".", (object)ShaderName));
                 Debug.LogWarning((object)"RP: Simple reflective shaders:");
                 Debug.LogWarning((object)"RP: -\"Reflective/Diffuse\"");
@@ -116,6 +118,8 @@ namespace ReflectionPlugin
                 Debug.LogWarning((object)"RP: -\"Reflective/Bumped VertexLit\"");
                 Debug.LogWarning((object)"RP: -\"Reflective/Parallax Diffuse\"");
                 Debug.LogWarning((object)"RP: -\"Reflective/Parallax Specular\"");
+				#endif
+
                 // Try to handle fallback later during material building
                 // This is so we can try to load and deserialize missing shaders from compiled shader code.
                 _rShader = null;
@@ -260,9 +264,8 @@ namespace ReflectionPlugin
 
                 print("RP: Set _Color");
                 material.SetColor("_Color", _Color);
-                // rim lighting experiment. Useless for Unity reflective shaders; only the KSP versions have it. Disabled as it requires setting to KSP shaders.
-                //material.SetFloat("_RimFalloff", rimFalloff);
-                //material.SetColor("_RimColor", rimColor);
+                material.SetFloat("_RimFalloff", rimFalloff);
+                material.SetColor("_RimColor", rimColor);
 
                 //}
                 //catch (Exception e)
@@ -288,10 +291,24 @@ namespace ReflectionPlugin
             else
                 Debug.LogError((object)("RP: Unable to find a Renderer component on the part. Part: " + part.partName));
         }
+
+		public void UpdateBody(GameEvents.FromToAction<CelestialBody,CelestialBody> onDominantBodyChange)
+		{
+			CelestialBody toBody = onDominantBodyChange.to;
+			if (toBody != null)
+			{
+				ScaledSpaceFader scaledSpaceFader = toBody.scaledBody.GetComponent<ScaledSpaceFader> ();
+				if ((object)scaledSpaceFader != null)
+					reflectiveScript.scaledFaderEnd = scaledSpaceFader.fadeEnd;
+			}
+			RefreshReflection(vessel);
+		}
+
 		public void RefreshReflection(Vessel v)
 		{
 			reflectiveScript.dirty = 7;
 		}
+
         public void Update()
         {
             scriptStatus = reflectiveScript.status;
